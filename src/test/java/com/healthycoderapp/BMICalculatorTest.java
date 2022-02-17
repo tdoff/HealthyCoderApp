@@ -1,20 +1,26 @@
 package com.healthycoderapp;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BMICalculatorTest {
+
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("Before all unit tests.");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.out.println("After all unit tests.");
+    }
 
     @Test
     void should_ReturnTrue_When_DietRecommended() {

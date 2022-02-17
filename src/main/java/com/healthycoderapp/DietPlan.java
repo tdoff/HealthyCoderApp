@@ -1,5 +1,7 @@
 package com.healthycoderapp;
 
+import java.util.Objects;
+
 public class DietPlan {
 	private int calories;
 	private int protein;
@@ -43,5 +45,18 @@ public class DietPlan {
 	}
 	public void setCarbohydrate(int carbohydrate) {
 		this.carbohydrate = carbohydrate;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DietPlan dietPlan = (DietPlan) o;
+		return calories == dietPlan.calories && protein == dietPlan.protein && fat == dietPlan.fat && carbohydrate == dietPlan.carbohydrate;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(calories, protein, fat, carbohydrate);
 	}
 }
