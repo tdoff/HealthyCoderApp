@@ -4,13 +4,26 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class BMICalculatorTest {
+
+    private String environment = "dev";
 
     @BeforeAll
     static void beforeAll() {
@@ -22,12 +35,13 @@ class BMICalculatorTest {
         System.out.println("After all unit tests.");
     }
 
-    @Test
-    void should_ReturnTrue_When_DietRecommended() {
+    @ParameterizedTest(name = "weight={0}, height={1}")
+    @CsvFileSource(resources = "/diet-recommended-input-data.csv", numLinesToSkip = 1)
+    void should_ReturnTrue_When_DietRecommended(Double coderWeight, Double coderHeight) {
 
         // given (arrange)
-        double weight = 89.0;
-        double height = 1.72;
+        double weight = coderWeight;
+        double height = coderHeight;
 
         // when (act)
         boolean recommended = BMICalculator.isDietRecommended(weight, height);
@@ -81,6 +95,24 @@ class BMICalculatorTest {
                 () -> assertEquals(1.82, coderWorstBMI.getHeight()),
                 () -> assertEquals(98.0, coderWorstBMI.getWeight())
         );
+    }
+
+    @Test
+    void should_ReturnCoderWithWorstBMIIn1Ms_When_CoderListHas10000Elements() {
+
+        assumeTrue(this.environment.equals("prod"));
+
+        // given
+        List<Coder> coders = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            coders.add(new Coder(1.0 + i, 10.0 + i));
+        }
+
+        // when
+        Executable executable = () -> BMICalculator.findCoderWithWorstBMI(coders);
+
+        // then
+        assertTimeout(Duration.ofMillis(50), executable);
     }
 
     @Test
